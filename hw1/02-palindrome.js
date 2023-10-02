@@ -2,7 +2,7 @@ const elem = document.querySelector('input');
 
 elem.addEventListener('input', handleInput);
 
-const outputElement = document.querySelector('#output');
+const outputElement = document.getElementById('output');
 
 function handleInput() {
   const int = elem.value;
