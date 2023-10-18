@@ -1,9 +1,7 @@
-// 04-background.js
-
 const mainElement = document.querySelector('main');
 const inputElement = document.getElementById('input');
 const toggleButton = document.getElementById('toggleButton');
-let intervalId;
+let intervalId = null;
 
 // Function to generate a random color
 function getRandomColor() {
@@ -33,13 +31,8 @@ function startBackgroundChange(interval) {
 // Event listener for the toggle button
 toggleButton.addEventListener('click', function () {
   if (toggleButton.classList.contains('btn-primary')) {
-    // Convert seconds to milliseconds
-    if (inputElement.value === '' || inputElement.value < 1) {
-      alert('Please enter a valid number of seconds.');
-      return;
-    }
-    const interval = inputElement.value * 1000;
-    startBackgroundChange(interval);
+    const interval = inputElement.value ? inputElement.value : 3;
+    startBackgroundChange(interval * 1000);
     toggleButton.textContent = 'Stop';
     toggleButton.classList.remove('btn-primary');
     toggleButton.classList.add('btn-danger');
