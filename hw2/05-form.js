@@ -10,7 +10,11 @@ form.onsubmit = (event) => {
     console.log('Full Name:', form.elements.fullName.value);
     console.log('Email:', form.elements.email.value);
 
-    console.log('Status: ', form.elements.registration.value);
+    if (form.elements.registration.value === 'choose-option') {
+      console.log('Status: Not Specified');
+    } else {
+      console.log('Status: ', form.elements.registration.value);
+    }
 
     console.log('Courses: ');
     checkboxes.forEach((checkbox) => {
@@ -23,4 +27,6 @@ form.onsubmit = (event) => {
   } else {
     console.warn('Please enter your full name');
   }
+
+  document.getElementById('reset').click();
 };
