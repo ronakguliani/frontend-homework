@@ -9,7 +9,7 @@
 9. flex-direction: column;
 10.flex-direction: row-reverse; justify-content: flex-end;
 11. flex-direction: column; justify-content: flex-end;
-12. flex-direction: column-reverse;
+12. flex-direction: column-reverse; justify-content: space-between;
 13. align-items: flex-end; flex-direction: row-reverse; justify-content: center;
 14. order: 1;
 15. order: -3;
