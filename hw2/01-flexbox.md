@@ -7,18 +7,18 @@
 7. justify-content: space-around; align-items: flex-end;
 8. flex-direction: row-reverse;
 9. flex-direction: column;
-   10.flex-direction: row-reverse; justify-content: flex-end;
-10. flex-direction: column; justify-content: flex-end;
-11. justify-content: space-between; flex-direction: column-reverse;
-12. align-items: flex-end; flex-direction: row-reverse; justify-content: center;
-13. order: 1;
-14. order: -3;
-15. align-self: flex-end;
-16. order: 1; align-self: flex-end;
-17. flex-wrap:wrap
-18. flex-direction: column; flex-wrap: wrap;
-19. flex-flow: column wrap;
-20. align-content: flex-start;
-21. align-content: flex-end;
-22. flex-direction: column-reverse; align-content: center;
-23. flex-flow:column-reverse wrap-reverse; justify-content:center align-content:space-between;
+10.flex-direction: row-reverse; justify-content: flex-end;
+11. flex-direction: column; justify-content: flex-end;
+12. flex-direction: column-reverse;
+13. align-items: flex-end; flex-direction: row-reverse; justify-content: center;
+14. order: 1;
+15. order: -3;
+16. align-self: flex-end;
+17. order: 1; align-self: flex-end;
+18. flex-wrap:wrap
+19. flex-direction: column; flex-wrap: wrap;
+20. flex-flow: column wrap;
+21. align-content: flex-start;
+22. align-content: flex-end;
+23. flex-direction: column-reverse; align-content: center;
+24. flex-flow:column-reverse wrap-reverse; justify-content:center align-content:space-between;
