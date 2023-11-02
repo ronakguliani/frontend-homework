@@ -1,3 +1,14 @@
+import React, { useEffect, useState } from 'react';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 const backgroundColors = [
   'rgba(54, 162, 235, 0.8)',
   'rgba(255, 206, 86, 0.8)',
@@ -39,8 +50,6 @@ const nameFixMap = {
   Unknown: 'Unknown House',
 };
 
-// Fix typos in character family names
-// Source: https://stackoverflow.com/questions/64506764/javascript-replace-using-key-mappings-and-regex and copilot
 const fixNames = (data) => {
   return data.map((character) => {
     Object.keys(nameFixMap).forEach((key) => {
@@ -73,44 +82,49 @@ const countCharactersByHouse = (data) => {
   return houseCountMap;
 };
 
-const renderChart = (houseData) => {
-  const donutChart = document.querySelector('.donut-chart');
-  const houses = Object.keys(houseData);
-  const houseCounts = Object.values(houseData);
+const Houses = () => {
+  const [houseData, setHouseData] = useState(null);
+  const [chartData, setChartData] = useState(null);
 
-  new Chart(donutChart, {
-    type: 'doughnut',
-    data: {
-      labels: houses,
-      datasets: [
-        {
-          label: 'Game of Throne Houses',
-          data: houseCounts,
-          backgroundColor: backgroundColors,
-          borderColor: borderColors,
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      layout: {
-        padding: { top: 30, bottom: 20 },
-      },
-      legend: { position: 'bottom' },
-    },
-  });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        let data = await response.json();
+        data = fixNames(data);
+        const houseCounts = countCharactersByHouse(data);
+        setHouseData(houseCounts);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (houseData) {
+      // Check if houseData exists before setting chartData. This is necessary
+      // because useEffect is called on the initial render before houseData is
+      setChartData({
+        labels: Object.keys(houseData),
+        datasets: [
+          {
+            label: 'Game of Thrones Houses',
+            data: Object.values(houseData),
+            backgroundColor: backgroundColors,
+            borderColor: borderColors,
+            borderWidth: 1,
+          },
+        ],
+      });
+    }
+  }, [houseData]);
+
+  return (
+    <div className="donut-chart">
+      {chartData && <Doughnut data={chartData} />}{' '}
+    </div>
+  );
 };
 
-const createChart = async () => {
-  try {
-    const response = await fetch(url);
-    let data = await response.json();
-    data = fixNames(data);
-    const houseData = countCharactersByHouse(data);
-    renderChart(houseData);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-createChart();
+export default Houses;
