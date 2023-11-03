@@ -1,3 +1,14 @@
+import React, { useEffect, useState } from 'react';
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Doughnut } from 'react-chartjs-2';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
 const backgroundColors = [
   'rgba(54, 162, 235, 0.8)',
   'rgba(255, 206, 86, 0.8)',
@@ -26,9 +37,6 @@ const borderColors = [
   'rgba(78, 52, 199, 1)',
 ];
 
-// url for the Thrones API
-const url = 'https://thronesapi.com/api/v2/Characters';
-
 // Create a map for quick lookups for fixing names
 const nameFixMap = {
   Targaryn: 'Targaryen',
@@ -36,11 +44,8 @@ const nameFixMap = {
   Lanister: 'Lannister',
   Ukown: 'Unknown House',
   Unkown: 'Unknown House',
-  Unknown: 'Unknown House',
 };
 
-// Fix typos in character family names
-// Source: https://stackoverflow.com/questions/64506764/javascript-replace-using-key-mappings-and-regex and copilot
 const fixNames = (data) => {
   return data.map((character) => {
     Object.keys(nameFixMap).forEach((key) => {
@@ -73,44 +78,33 @@ const countCharactersByHouse = (data) => {
   return houseCountMap;
 };
 
-const renderChart = (houseData) => {
-  const donutChart = document.querySelector('.donut-chart');
-  const houses = Object.keys(houseData);
-  const houseCounts = Object.values(houseData);
+const Houses = ({ characters }) => {
+  const [chartData, setChartData] = useState(null);
 
-  new Chart(donutChart, {
-    type: 'doughnut',
-    data: {
-      labels: houses,
-      datasets: [
-        {
-          label: 'Game of Throne Houses',
-          data: houseCounts,
-          backgroundColor: backgroundColors,
-          borderColor: borderColors,
-          borderWidth: 1,
-        },
-      ],
-    },
-    options: {
-      layout: {
-        padding: { top: 30, bottom: 20 },
-      },
-      legend: { position: 'bottom' },
-    },
-  });
+  useEffect(() => {
+    if (characters.length > 0) {
+      const fixedCharacters = fixNames(characters);
+      const houseCounts = countCharactersByHouse(fixedCharacters);
+      setChartData({
+        labels: Object.keys(houseCounts),
+        datasets: [
+          {
+            label: 'Game of Thrones Houses',
+            data: Object.values(houseCounts),
+            backgroundColor: backgroundColors,
+            borderColor: borderColors,
+            borderWidth: 1,
+          },
+        ],
+      });
+    }
+  }, [characters]);
+
+  return (
+    <div className="donut-chart">
+      {chartData && <Doughnut data={chartData} />}
+    </div>
+  );
 };
 
-const createChart = async () => {
-  try {
-    const response = await fetch(url);
-    let data = await response.json();
-    data = fixNames(data);
-    const houseData = countCharactersByHouse(data);
-    renderChart(houseData);
-  } catch (error) {
-    console.error(error);
-  }
-};
-
-createChart();
+export default Houses;

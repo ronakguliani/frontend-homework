@@ -1,0 +1,18 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+.navbar {
+  padding-left: 3rem;
+  padding-right: 2rem;
+}
+
+.avatar-footer img {
+  margin: 0 auto;
+  display: block;
+}
