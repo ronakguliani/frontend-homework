@@ -37,9 +37,6 @@ const borderColors = [
   'rgba(78, 52, 199, 1)',
 ];
 
-// url for the Thrones API
-const url = 'https://thronesapi.com/api/v2/Characters';
-
 // Create a map for quick lookups for fixing names
 const nameFixMap = {
   Targaryn: 'Targaryen',
@@ -47,7 +44,6 @@ const nameFixMap = {
   Lanister: 'Lannister',
   Ukown: 'Unknown House',
   Unkown: 'Unknown House',
-  Unknown: 'Unknown House',
 };
 
 const fixNames = (data) => {
@@ -82,35 +78,19 @@ const countCharactersByHouse = (data) => {
   return houseCountMap;
 };
 
-const Houses = () => {
-  const [houseData, setHouseData] = useState(null);
+const Houses = ({ characters }) => {
   const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(url);
-        let data = await response.json();
-        data = fixNames(data);
-        const houseCounts = countCharactersByHouse(data);
-        setHouseData(houseCounts);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (houseData) {
-      // Check if houseData exists before setting chartData. This is necessary
-      // because useEffect is called on the initial render before houseData is
+    if (characters.length > 0) {
+      const fixedCharacters = fixNames(characters);
+      const houseCounts = countCharactersByHouse(fixedCharacters);
       setChartData({
-        labels: Object.keys(houseData),
+        labels: Object.keys(houseCounts),
         datasets: [
           {
             label: 'Game of Thrones Houses',
-            data: Object.values(houseData),
+            data: Object.values(houseCounts),
             backgroundColor: backgroundColors,
             borderColor: borderColors,
             borderWidth: 1,
@@ -118,11 +98,11 @@ const Houses = () => {
         ],
       });
     }
-  }, [houseData]);
+  }, [characters]);
 
   return (
     <div className="donut-chart">
-      {chartData && <Doughnut data={chartData} />}{' '}
+      {chartData && <Doughnut data={chartData} />}
     </div>
   );
 };
