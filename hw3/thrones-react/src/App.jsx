@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
-import { Alert, Nav, Navbar, Row, Col, Image } from 'react-bootstrap';
+import { Alert, Nav, Navbar } from 'react-bootstrap';
+import axios from 'axios';
 import './App.css';
 
 import Home from './Home';
@@ -17,14 +18,10 @@ const App = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error();
-        }
-        setCharacters(await response.json());
-        setErrorMessage(null);
+        const response = await axios.get(url);
+        setCharacters(response.data);
       } catch (error) {
-        setErrorMessage('Failed to load character data.');
+        setErrorMessage(error.message);
       }
     };
 
@@ -33,9 +30,9 @@ const App = () => {
 
   return (
     <>
-      <Navbar bg="dark" variant="dark">
+      <Navbar bg="dark" variant="dark" className="navbar">
         <Navbar.Brand>Game of Thrones </Navbar.Brand>
-        <Nav className="mr-auto">
+        <Nav>
           <LinkContainer to="/home">
             <Nav.Link>Home</Nav.Link>
           </LinkContainer>
@@ -48,14 +45,12 @@ const App = () => {
         </Nav>
       </Navbar>
 
-      <main className="container p-3 d-flex flex-column justify-content-center">
-        <Alert
-          variant="danger"
-          className="mx-auto"
-          show={errorMessage !== null}
-        >
-          {errorMessage}
-        </Alert>
+      <main className="container p-2 d-flex flex-column justify-content-center">
+        {/* Source: https://stackoverflow.com/questions/72074631/error-functions-are-not-valid-as-a-react-child-this-may-happen-if-you-return */}
+        {errorMessage && (
+          <Alert variant="danger">{errorMessage}</Alert>
+        )}
+
         <Routes>
           <Route index element={<Navigate to="/home" replace />} />
           <Route path="/home" element={<Home />} />
@@ -70,21 +65,31 @@ const App = () => {
         </Routes>
       </main>
 
-      <footer className="avatar-footer">
-        <Row className="justify-content-center">
-          {characters.slice(0, 5).map((character) => (
-            <Col xs={2} key={character.id}>
-              <Image
-                src={character.imageUrl}
-                roundedCircle
-                width={70}
-                alt={`Avatar of ${character.fullName}`}
-              />
-            </Col>
-          ))}
-        </Row>
+      <footer>
+        <AvatarList characters={characters.slice(0, 5)} />
       </footer>
     </>
+  );
+};
+
+const AvatarList = ({ characters }) => {
+  return (
+    <div className="avatar-footer">
+      <div className="row justify-content-center p-5">
+        {/* Map over characters to create avatars*/}
+        {characters.map((character) => (
+          <div className="col-auto" key={character.id}>
+            <img
+              src={character.imageUrl}
+              className="rounded-circle"
+              width={80}
+              height={80}
+              alt={`Avatar of ${character.fullName}`}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
