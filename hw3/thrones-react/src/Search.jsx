@@ -7,20 +7,26 @@ import {
 } from 'react-bootstrap';
 
 const Search = ({ characters }) => {
-  // Store the search term
   const [searchTerm, setSearchTerm] = useState('');
+  const [filteredCharacters, setFilteredCharacters] = useState([]);
 
-  // Function to handle the input change
   const handleInputChange = (e) => {
     setSearchTerm(e.target.value);
   };
 
-  // Filter the characters based on the search term
-  const filteredCharacters = characters.filter((character) =>
-    character.fullName
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase())
-  );
+  // Function to handle the Enter key down event similar to HW 2 Count
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // Filter the characters based on the search term
+      const matchedCharacters = characters.filter((character) =>
+        character.fullName
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase())
+      );
+      setFilteredCharacters(matchedCharacters);
+    }
+  };
 
   return (
     <Container
@@ -34,9 +40,10 @@ const Search = ({ characters }) => {
 
       <InputGroup className="mb-3">
         <FormControl
-          placeholder="Search for a character"
+          placeholder="Type query then press enter"
           value={searchTerm}
           onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
         />
       </InputGroup>
 
@@ -44,9 +51,6 @@ const Search = ({ characters }) => {
         {filteredCharacters.length === 0 ? (
           <ListGroup.Item>No characters found</ListGroup.Item>
         ) : (
-          // Display ALL matching characters
-          // Used https://stackoverflow.com/questions/55153873/warning-each-child-in-a-list-should-have-a-unique-key-prop and
-          // Copilot for help
           filteredCharacters.map((character) => (
             <ListGroup.Item key={character.id}>
               <h2>{character.fullName}</h2>
