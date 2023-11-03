@@ -13,6 +13,30 @@ h1 {
   text-align: center;
 }
 
+.character-wrapper {
+  width: 220px;
+  height: 350px;
+}
+
+// Used https://css-tricks.com/on-object-fit-and-object-position/
+.character-wrapper img {
+  object-fit: cover;
+}
+
+.character-wrapper:hover {
+  background-color: var(--blue);
+}
+
+.character-wrapper:hover h2,
+.character-wrapper:hover p {
+  color: var(--white);
+}
+
+.character-wrapper h2,
+.character-wrapper p {
+  color: var(--black);
+}
+
 .donut-chart {
   border-radius: 0.8rem;
   background-color: var(--white);
